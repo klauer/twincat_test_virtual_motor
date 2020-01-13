@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <DUT Name="DUT_Test" Id="{7b098335-5e96-47c7-9a9d-fdf9aaeb0cef}">
+    <Declaration><![CDATA[TYPE DUT_Test :
+STRUCT
+
+	{attribute 'pytmc' := '
+		pv: intval
+	'}
+	intval : int;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

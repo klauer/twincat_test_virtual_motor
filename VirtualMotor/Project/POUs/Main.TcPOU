@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="Main" Id="{c6e3248e-5fe0-4991-995a-2f17115f19a4}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Main
+VAR
+	{attribute 'pytmc' := '
+    	pv: AXIS1
+	'}
+	M1: DUT_MotionStage;
+	fbMotion1: FB_MotionStage;
+	
+	{attribute 'pytmc' := '
+		pv: TEST:MAIN:SCALE
+    	io: io
+	'}
+	scale : LREAL := 1.234;
+	
+	{attribute 'pytmc' := '
+		pv: MY:DUT
+		expand: :%.2d:
+	'}
+	test_arr : array[1..5] of DUT_Test;
+	
+	iLoop : UINT;
+	
+	{attribute 'pytmc' := '
+		pv: TEST:LOGMESSAGE:
+	'}
+	fbLogger : FB_LogMessage;
+	
+	{attribute 'pytmc' := '
+		pv: TEST:LOGHANDLER:
+	'}
+	fbLogHandler	: FB_LogHandler;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[M1.bAllBackwardEnable := TRUE;
+M1.bAllForwardEnable := TRUE;
+M1.bBrakeRelease := TRUE;
+M1.bPowerSelf := TRUE;
+M1.nEnableMode := ENUM_StageEnableMode.STAGE_ENABLE_ALWAYS;
+
+fbMotion1(stMotionStage:=M1);
+
+iLoop := iLoop + 1;
+
+if (iLoop MOD 100) = 0 then
+	fbLogger.sJson := '{"user":"defined"}'; 
+	fbLogger(sMsg:='the updated message', eSevr:=TcEventSeverity.Verbose, eSubsystem:= E_Subsystem.MOTION);
+END_IF
+
+fbLogHandler.fbLCLSListener.LogToVisualStudio := TRUE;
+fbLogHandler();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
